@@ -42,7 +42,7 @@ Processor: Intel Core i5 or higher
 Memory: 8 GB
 
 
-There are two folders in this repo:
+There are two folders for the codes in this repo:
 
 - _start_ contains the boilerplate code you'll need to follow along with the examples in the course. You'll add your own code as you go in order to build a fully functioning Marketplace. Any code not demonstrated in the course videos has already been completed in this folder.
 
