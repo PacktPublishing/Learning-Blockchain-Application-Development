@@ -3,6 +3,10 @@ Learning Blockchain Application Development [video], published by Packt
 
 # Learning Blockchain Application Development [Video]
 This is the code repository for [Learning Blockchain Application Development [Video]](https://www.packtpub.com/application-development/learning-blockchain-application-development-video?utm_source=github&utm_medium=repository&utm_campaign=9781789345728), published by [Packt](https://www.packtpub.com/?utm_source=github). It contains all the supporting project files necessary to work through the video course from start to finish.
+
+## Updates for Solidity 0.5.0 and Node.js v10
+The code in this repo has been updated to work with Solidity v0.5.0 and Node.js v10. Where this caused differences in the code here and the code shown in the video, comments have made in the code explaining the difference (and why).
+
 ## About the Video Course
 Blockchain disrupts many different aspects of our life including finance, retail, merchandising, identity, and more. Ethereum is a platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, censorship, fraud, or third-party interference. This is the perfect guide to help you learn the basics of building decentralized applications with the Ethereum network. You’ll learn the core concepts of decentralized applications as we build an online marketplace, connecting buyers and sellers together to exchange goods and services. In doing so, you’ll deploy your code to the Ethereum network, and build a user Interface to expose your decentralized application to the world.
 
