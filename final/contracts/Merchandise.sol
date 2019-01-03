@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity 0.5.0;  // Update to Solidity 0.5
 
 contract Merchandise {
     address owner;
@@ -24,12 +24,12 @@ contract Merchandise {
     }
 
     function kill() public {
-        require(msg.sender == owner);
-        selfdestruct(owner);
+        require(msg.sender == owner, "Only contract owner can kill contract");
+        selfdestruct(msg.sender); // Can only transfer funds to "address payable" types, so use msg.sender here
     }
 
     function setOnline(bool status) public {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only contract owner can set online status");
         online = status;
     }
 
@@ -39,8 +39,9 @@ contract Merchandise {
         uint price
     );
 
-    function addItem(string name, string description, uint price) public returns(uint) {
-        require(online == true);
+    function addItem(string memory name, string memory description, uint price) public returns(uint) { 
+        // string storage   ^^ location must now be explicitly declared
+        require(online == true, "Store must be online to add items");
         require(price > 0, "Price must be greater than zero");
         uint initialLength = items.length;
         items.push(Item({
@@ -60,7 +61,8 @@ contract Merchandise {
     }
 
     function getItem(uint itemId) public view returns(
-        uint, string, string, uint, bool, bool, bool
+        uint, string memory, string memory, uint, bool, bool, bool
+        // string storage location  ^^ must be explicitly declared
     ) {
         return (
             items[itemId].itemId,
@@ -74,28 +76,29 @@ contract Merchandise {
     }
 
     function buyItem(uint itemId) public payable returns(bool) {
-        require(online = true);
-        require(msg.value == items[itemId].itemPrice);
-        require(items[itemId].sold != true);
+        require(online = true, "Store must be online to buy items");
+        require(msg.value == items[itemId].itemPrice, "Eth submitted must equal purchase price");
+        require(items[itemId].sold != true, "Cannot purchase items already sold");
         items[itemId].buyer = msg.sender;
         items[itemId].sold = true;
         return true;
     }
 
     function shipItem(uint itemId) public {
-        require(items[itemId].sold == true);
+        require(items[itemId].sold == true, "Cannot ship unsold items");
         items[itemId].shipped = true;
     }
 
     function receiveItem(uint itemId) public {
-        require(items[itemId].shipped == true);
-        require(msg.sender == items[itemId].buyer);
+        require(items[itemId].shipped == true, "Cannot receive unsold items");
+        require(msg.sender == items[itemId].buyer, "Only buyer can mark item as received");
         items[itemId].received = true;
     }
 
     function claimFunds(uint itemId) public {
-        require(online == true);
-        require(msg.sender == items[itemId].seller);
+        require(online == true, "Store must be online to claim funds");
+        require(msg.sender == items[itemId].seller, "Only seller can claim funds");
+        require(items[itemId].received == true, "Cannot claim funds until item received");
         msg.sender.transfer(items[itemId].itemPrice);
     }
 

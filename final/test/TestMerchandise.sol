@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity 0.5.0;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
@@ -22,7 +22,7 @@ contract TestMerchandise {
     }
 
     function testGetItem() public {
-        uint expectedItemId = 1;
+        uint expectedItemId = 0;
         string memory expectedName = "Test Item";
         string memory expectedDesc = "Test Description";
         uint expectedPrice = 4 ether;
