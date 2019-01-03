@@ -10,17 +10,18 @@ contract('Merchandise', async (accounts) => {
         await merchandise.addItem(
             "A test item from Javascript tests",
             "Description of test item",
-            web3.toWei(2, 'ether'),
+            web3.utils.toWei('2', 'ether'),  // toWei is now in web3.utils
             {from: seller}
         );
     });
 
     it("Should have the test item in the marketplace", async () => {
         let item = await merchandise.getItem(0);
-        assert.equal(item[0].toNumber(), 1, "The item should have an id of 1");
+        assert.equal(item[0].toNumber(), 0, "The item should have an id of 0");
         assert.equal(item[1], "A test item from Javascript tests", "The item should have the correct name");
         assert.equal(item[2], "Description of test item", "The item should have the correct description");
-        assert.equal(web3.fromWei(item[3].toNumber(), 'ether'), 2, "The item should have the correct price");
+        // Using Javascript numbers now throws an error due to precision errors. Below you can see we're using strings instead
+        assert.equal(web3.utils.fromWei(item[3].toString(), 'ether'), '2', "The item should have the correct price");
         // assert.isFalse(item[4], "The item should not be marked as sold");
         assert.isFalse(item[5], "The item should not be marked as received");
         assert.isFalse(item[6], "The item should not be marked as shipped");
@@ -39,25 +40,28 @@ contract('Merchandise', async (accounts) => {
 
     it("Should be able to buy an item", async () => {
         console.log("Entering buy test");
-        buyerInitialBalance = web3.fromWei(web3.eth.getBalance(buyer).toNumber(), 'ether');
-        console.log("Buyer funds: ", buyerInitialBalance);
+        // web3.eth.getBalance now returns a Promise instead of the balance, so we use await
+        const buyerInitialBalanceInWei = await web3.eth.getBalance(buyer)
+        buyerInitialBalanceInEther = web3.utils.fromWei(buyerInitialBalanceInWei, 'ether');
+        console.log("Buyer funds: ", buyerInitialBalanceInEther);
         let itemToBuy = await merchandise.buyItem(0, {
             from: buyer,
-            value: web3.toWei(2, 'ether')
+            value: web3.utils.toWei('2', 'ether') // see note on line 23 about using Javascript numbers
         });
         console.log(itemToBuy);
 
-        buyerPostBalance = web3.fromWei(web3.eth.getBalance(buyer).toNumber(), 'ether');
+        buyerPostBalanceInWei = await web3.eth.getBalance(buyer) // see not on line 43 regarding web3.eth.getBalance
+        buyerPostBalanceInEther = web3.utils.fromWei(buyerPostBalanceInWei, 'ether');
         let boughtItem = await merchandise.getItem(0);
         assert.isTrue(boughtItem[4], "The item should be marked as sold");
-        assert.isAbove(buyerInitialBalance - buyerPostBalance, 2, "Account should have been debited 2 ether");
+        assert.isAbove(buyerInitialBalanceInEther - buyerPostBalanceInEther, 2, "Account should have been debited 2 ether");
     });
 
     it("Should fail if already sold", async () => {
         try {
             let itemToBuy = await merchandise.buyItem(0, {
                 from: buyer,
-                value: web3.toWei(2, 'ether')
+                value: web3.utils.toWei('2', 'ether') // see note on line 23 about using Javascript numbers
             });
             assert.fail();
         } catch(error) {
@@ -104,12 +108,14 @@ contract('Merchandise', async (accounts) => {
     });
 
     it("Should claim funds after received", async () => {
-        let sellerInitialBalance = web3.fromWei(web3.eth.getBalance(seller).toNumber(), 'ether');
+        const sellerInitialBalanceInWei = await web3.eth.getBalance(seller) // see note on line 43 regarding web3.eth.getBalance
+        let sellerInitialBalanceInEther = web3.utils.fromWei(sellerInitialBalanceInWei, 'ether');
         let itemToClaim = await merchandise.claimFunds(0, {
             from: seller
         });
-        let sellerPostBalance = web3.fromWei(web3.eth.getBalance(seller).toNumber(), 'ether');
-        assert.isAbove(sellerPostBalance - sellerInitialBalance, 1.9, "Seller balance should have increased");
+        const sellerPostBalanceInWei = await web3.eth.getBalance(seller) // see note on line 43 regarding web3.eth.getBalance
+        let sellerPostBalanceInEther = web3.utils.fromWei(sellerPostBalanceInWei, 'ether');
+        assert.isAbove(sellerPostBalanceInEther - sellerInitialBalanceInEther, 1.9, "Seller balance should have increased");
     });
 
 });
