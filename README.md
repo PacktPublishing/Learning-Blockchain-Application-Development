@@ -51,7 +51,3 @@ There are two folders for the codes in this repo:
 - _start_ contains the boilerplate code you'll need to follow along with the examples in the course. You'll add your own code as you go in order to build a fully functioning Marketplace. Any code not demonstrated in the course videos has already been completed in this folder.
 
 - _final_ contains the fully functioning application demonstrated during this course. Use this to browse the code on your own, or as a reference if you get stuck writing your own code.
-### Download a free PDF
-
- <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
-<p align="center"> <a href="https://packt.link/free-ebook/9781789345728">https://packt.link/free-ebook/9781789345728 </a> </p>
